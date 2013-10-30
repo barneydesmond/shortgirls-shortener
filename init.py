@@ -14,6 +14,14 @@ os.umask(022)
 URL_STEM  = os.environ.get('URL_STEM')
 URL_STORE = os.environ.get('URL_STORE')
 
+URL_ENTRY_FORM = """
+            <form method="get">
+            <label for="url">URL to shorten</label>
+            <input type="text" name="new_url" size="60" id="url" accesskey="u" />
+            <input type="submit" value="Shorten!" accesskey="s" />
+            </form>
+"""
+
 class http_response(object):
     def __init__(self, environ, start_response):
         self.buffer = cStringIO.StringIO()
@@ -117,6 +125,7 @@ def application(environ, start_response):
                 print "<p>Okay, here's your URL:</p>"
                 print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                 print '''<p>%s</p>''' % URL
+                print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
                 return output.finalise()
             else:
                 print "<p>Hmm, that one already exists, let's see if it's the same</p>"
@@ -133,6 +142,7 @@ def application(environ, start_response):
                     print "<p>Okay, here's your URL:</p>"
                     print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                     print '''<p>%s</p>''' % URL
+                    print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
                     return output.finalise()
 
                 CURRENT_URL = URL[0]
@@ -141,6 +151,7 @@ def application(environ, start_response):
                     print "<p>Okay, no problem here's your URL:</p>"
                     print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                     print '''<p>%s</p>''' % URL
+                    print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
                     return output.finalise()
 
                 print "<p>Damn, a collision, let's try again...</p>"
@@ -149,6 +160,17 @@ def application(environ, start_response):
         return output.finalise()
 
     else:
+        print """<p>
+            <center>
+            <img src="/static/poliwag.jpg" width="260" height="240" /><br />
+            Sorry, nothing to see here<br />
+            <hr />""" + URL_ENTRY_FORM + """
+            </center>
+            <div style="color: silver;">
+            <small><pre>javascript:var%20u='http://lzma.so/?new_url='+encodeURIComponent(document.location.href);a=function(){if(!window.open(u))document.location.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0);</pre></small>
+            </div>
+        </p>"""
+
         URL_DIR = URL_FILE = URL_STORE
         print "<ul>"
         for FILE in os.listdir(URL_DIR):
