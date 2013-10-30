@@ -104,46 +104,46 @@ def application(environ, start_response):
             except NoMoreRotationException:
                 return output.boom("Damn, couldn't get a hash for that URL for some reason")
 
-            print "Mini hash is %s<br />" % h
+            print "<p>Mini hash is %s</p>" % h
             URL_FILE = os.path.join(URL_STORE, h)
 
 
             if not os.path.exists(URL_FILE):
-                print "%s doesn't exist yet, great!<br />" % URL_FILE
+                print "<p>%s doesn't exist yet, great!</p>" % URL_FILE
                 f = open(URL_FILE, 'w')
                 f.write(NEW)
                 f.close()
                 URL = URL_STEM + h
-                print "Okay, here's your URL:<br />"
-                print '''<a href="%s">%s</a><br />''' % (URL, URL)
-                print '''%s''' % URL
+                print "<p>Okay, here's your URL:</p>"
+                print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
+                print '''<p>%s</p>''' % URL
                 return output.finalise()
             else:
-                print "Hmm, that one already exists, let's see if it's the same<br />"
+                print "<p>Hmm, that one already exists, let's see if it's the same</p>"
                 f = open(URL_FILE)
                 URL = f.readlines()
                 f.close()
 
                 if len(URL) < 1:
-                    print "URL file %s doesn't seem to have a URL in it, we should use it<br />" % URL_FILE
+                    print "<p>URL file %s doesn't seem to have a URL in it, we should use it</p>" % URL_FILE
                     f = open(URL_FILE, 'w')
                     f.write(NEW)
                     f.close()
                     URL = URL_STEM + h
-                    print "Okay, here's your URL:<br />"
-                    print '''<a href="%s">%s</a><br />''' % (URL, URL)
-                    print '''%s''' % URL
+                    print "<p>Okay, here's your URL:</p>"
+                    print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
+                    print '''<p>%s</p>''' % URL
                     return output.finalise()
 
                 CURRENT_URL = URL[0]
                 if CURRENT_URL == NEW:
                     URL = URL_STEM + h
-                    print "Okay, no problem here's your URL:<br />"
-                    print '''<a href="%s">%s</a><br />''' % (URL, URL)
-                    print '''%s''' % URL
+                    print "<p>Okay, no problem here's your URL:</p>"
+                    print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
+                    print '''<p>%s</p>''' % URL
                     return output.finalise()
 
-                print "Damn, a collision, let's try again...<br />"
+                print "<p>Damn, a collision, let's try again...</p>"
 
 
         return output.finalise()
