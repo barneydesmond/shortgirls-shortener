@@ -5,14 +5,18 @@ import cgi
 import cStringIO
 import hashlib
 import base64
+import urlparse
 
 # Observed that we don't seem to have a sane umask, URL files are
 # coming out with mode 666, kinda unexpected.
 os.umask(022)
 
-# Get config from the environment
+# Get config from the environment, eg.:
+# URL_STEM  = http://example.com/
+# URL_STORE = /home/shortener/app/urls
 URL_STEM  = os.environ.get('URL_STEM')
 URL_STORE = os.environ.get('URL_STORE')
+URLP = urlparse.urlparse(URL_STEM)
 
 URL_ENTRY_FORM = """
             <form method="get">
@@ -126,6 +130,7 @@ def application(environ, start_response):
                 print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                 print '''<p>%s</p>''' % URL
                 print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
+                print """<script>window.history.pushState("stateThing", URLP.netloc, "/%s");</script>""" % h
                 return output.finalise()
             else:
                 print "<p>Hmm, that one already exists, let's see if it's the same</p>"
@@ -143,6 +148,7 @@ def application(environ, start_response):
                     print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                     print '''<p>%s</p>''' % URL
                     print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
+                    print """<script>window.history.pushState("stateThing", URLP.netloc, "/%s");</script>""" % h
                     return output.finalise()
 
                 CURRENT_URL = URL[0]
@@ -152,6 +158,7 @@ def application(environ, start_response):
                     print '''<p><a href="%s">%s</a></p>''' % (URL, URL)
                     print '''<p>%s</p>''' % URL
                     print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
+                    print """<script>window.history.pushState("stateThing", "lzma.so", "/%s");</script>""" % h
                     return output.finalise()
 
                 print "<p>Damn, a collision, let's try again...</p>"
