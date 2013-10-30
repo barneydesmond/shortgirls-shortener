@@ -10,8 +10,8 @@ import base64
 # coming out with mode 666, kinda unexpected.
 os.umask(022)
 
-
-URL_STEM = 'http://shortgirls.net/'
+# Get config from the environment
+URL_STEM  = os.environ.get('URL_STEM')
 URL_STORE = os.environ.get('URL_STORE')
 
 class http_response(object):
