@@ -157,6 +157,7 @@ def application(environ, start_response):
                 print "<p>Damn, a collision, let's try again...</p>"
 
 
+        # Should never get here? Probably proveable.
         return output.finalise()
 
     else:
@@ -171,6 +172,8 @@ def application(environ, start_response):
             </div>
         </p>"""
 
+        # Dead code, we don't want to enumerate all the short URLs
+        return output.finalise()
         URL_DIR = URL_FILE = URL_STORE
         print "<ul>"
         for FILE in os.listdir(URL_DIR):
