@@ -6,6 +6,9 @@ import cStringIO
 import hashlib
 import base64
 
+# Observed that we don't seem to have a sane umask, URL files are
+# coming out with mode 666, kinda unexpected.
+os.umask(022)
 
 
 URL_STEM = 'http://shortgirls.net/'
