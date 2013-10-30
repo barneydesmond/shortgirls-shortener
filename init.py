@@ -9,7 +9,9 @@ import base64
 import site
 site.addsitedir('/home/shortgirls/url_shortener/lib/python2.6/site-packages')
 
+
 URL_STEM = 'http://shortgirls.net/'
+URL_STORE = os.environ.get('URL_STORE')
 
 class http_response(object):
     def __init__(self, environ, start_response):
@@ -64,9 +66,8 @@ class hash_machine(object):
 
 
 def application(environ, start_response):
-    # cwd gets set to /, which is annoying :(
-    cwd = os.path.dirname(__file__)
-    sys.path.insert(0, cwd)
+    if URL_STORE is None:
+        return output.boom("The URL_STORE environment variable is not set, cannot run.")
 
     # Setup our output
     output = http_response(environ, start_response)
@@ -79,7 +80,7 @@ def application(environ, start_response):
     NEW = str(form.getfirst("new_url", ''))
 
     if SHORT:
-        URL_FILE = os.path.join(cwd, 'urls', SHORT)
+        URL_FILE = os.path.join(URL_STORE, SHORT)
         URL = ''
 
         if os.path.exists(URL_FILE):
@@ -103,7 +104,7 @@ def application(environ, start_response):
                 return output.boom("Damn, couldn't get a hash for that URL for some reason")
 
             print "Mini hash is %s<br />" % h
-            URL_FILE = os.path.join(cwd, 'urls', h)
+            URL_FILE = os.path.join(URL_STORE, h)
 
 
             if not os.path.exists(URL_FILE):
@@ -147,7 +148,7 @@ def application(environ, start_response):
         return output.finalise()
 
     else:
-        URL_DIR = URL_FILE = os.path.join(cwd, 'urls')
+        URL_DIR = URL_FILE = URL_STORE
         print "<ul>"
         for FILE in os.listdir(URL_DIR):
             print '''<li><a href="%s">%s</a></li>''' % (FILE, FILE)
