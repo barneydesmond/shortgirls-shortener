@@ -6,8 +6,6 @@ import cStringIO
 import hashlib
 import base64
 
-import site
-site.addsitedir('/home/shortgirls/url_shortener/lib/python2.6/site-packages')
 
 
 URL_STEM = 'http://shortgirls.net/'
