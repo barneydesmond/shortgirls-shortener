@@ -26,6 +26,8 @@ URL_ENTRY_FORM = """
             </form>
 """
 
+MAX_URL_LEN = 1048576 # 1 MiB should be plenty for even the craziest URLs
+
 class http_response(object):
     def __init__(self, environ, start_response):
         self.buffer = cStringIO.StringIO()
@@ -117,9 +119,9 @@ def application(environ, start_response):
         URL = ''
 
         if os.path.exists(URL_FILE):
-            f = open(URL_FILE)
-            URL = f.readlines()
-            f.close()
+            with open(URL_FILE, 'r') as f:
+                url_data = f.read(MAX_URL_LEN)
+            URL = url_data.splitlines()
             if len(URL) < 1:
                 return output.boom("URL file %s doesn't seem to have a URL in it!" % URL_FILE)
             return output.redirect(URL[0])
