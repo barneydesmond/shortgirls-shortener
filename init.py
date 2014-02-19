@@ -73,6 +73,7 @@ class http_response(object):
 
     def boom(self, msg):
         self.status = '500 Server side error'
+        self.headers = [('Content-Type', 'text/plain')]
         print >>self.buffer, "Critical error, HTTP status 500"
         print >>self.buffer, str(msg)
         return self.finalise()
