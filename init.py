@@ -115,6 +115,8 @@ def application(environ, start_response):
         output.request_json()
 
     if SHORT:
+        # Thwart attempts to access files outside the URL_STORE
+        SHORT = os.path.basename(SHORT)
         URL_FILE = os.path.join(URL_STORE, SHORT)
         URL = ''
 
