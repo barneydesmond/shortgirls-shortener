@@ -131,6 +131,8 @@ def application(environ, start_response):
             return output.boom("URL file %s doesn't exist" % URL_FILE)
 
     elif NEW:
+        # This can potentially produce a bad URL, eg. percent-encoding crossing the truncation boundary
+        NEW = NEW[:MAX_URL_LEN]
         print '''Your URL is <a href="%s">%s</a><br />''' % (NEW, NEW)
         hasher = hash_machine(NEW)
 
