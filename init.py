@@ -22,7 +22,7 @@ URLP = urlparse.urlparse(URL_STEM)
 URL_ENTRY_FORM = """
             <form method="get">
             <label for="url">URL to shorten</label>
-            <input type="text" name="new_url" size="60" id="url" accesskey="u" />
+            <input type="text" name="new_url" size="60" id="url" accesskey="u" autofocus="autofocus" />
             <input type="submit" value="Shorten!" accesskey="s" />
             </form>
 """
