@@ -28,6 +28,7 @@ URL_ENTRY_FORM = """
 """
 
 MAX_URL_LEN = 1048576 # 1 MiB should be plenty for even the craziest URLs
+URL_INVALID_CHAR_RE = re.compile(r"[^A-Za-z0-9:;/|=_,.~!*'@(){}$?&%#+-]")
 
 class http_response(object):
     def __init__(self, environ, start_response):
@@ -107,8 +108,8 @@ def application(environ, start_response):
 
     # Get all our form input
     form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ)
-    SHORT = str(form.getfirst("short", ''))
-    NEW = str(form.getfirst("new_url", ''))
+    SHORT = str(form.getfirst("short", '')).strip()
+    NEW = str(form.getfirst("new_url", '')).strip()
 
     # Look for HTTP Accept: header, which non-human clients will use to request JSON output
     request_accept = environ.get('HTTP_ACCEPT', "")
@@ -133,14 +134,29 @@ def application(environ, start_response):
             return output.boom("URL file %s doesn't exist" % URL_FILE)
 
     elif NEW:
+        message = ''
+        OLD = NEW
+
         # This can potentially produce a bad URL, eg. percent-encoding crossing the truncation boundary
-        NEW = NEW[:MAX_URL_LEN]
+        NEW = OLD[:MAX_URL_LEN]
+        if NEW != OLD:
+                message += "Your URL is too long and was trimmed. "
+        OLD = NEW
 
         # Forcefully add a schema if the user didn't supply one. Kinda ugly, but practical I think.
-        if re.match(r'[a-z]+:', NEW) is None:
-                NEW = 'http://'+NEW
+        if re.match(r'[a-z]+:', OLD) is None:
+                NEW = 'http://'+OLD
+                message += "Your URL has no schema, so http:// has been prepended. "
+        OLD = NEW
 
-        print '''Your URL is <a href="%s">%s</a><br />''' % (NEW, NEW)
+        # Nuke any invalid characters
+        NEW = URL_INVALID_CHAR_RE.sub('', OLD)
+        if NEW != OLD:
+                message += "Your URL contains invalid or unescaped characters, they have been removed. "
+        OLD = NEW
+
+        message += '''Your URL is <a href="{0}">{0}</a><br />'''.format(NEW)
+        print message
         hasher = hash_machine(NEW)
 
         while True:
