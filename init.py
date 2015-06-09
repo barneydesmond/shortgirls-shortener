@@ -7,6 +7,7 @@ import cStringIO
 import hashlib
 import base64
 import urlparse
+from paste.exceptions.errormiddleware import ErrorMiddleware
 
 # Observed that we don't seem to have a sane umask, URL files are
 # coming out with mode 666, kinda unexpected.
@@ -247,5 +248,4 @@ def application(environ, start_response):
 
 
 
-from paste.exceptions.errormiddleware import ErrorMiddleware
 application = ErrorMiddleware(application, debug=True)

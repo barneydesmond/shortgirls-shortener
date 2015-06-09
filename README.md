@@ -15,11 +15,20 @@ shortgirls.net wouldn't necessarily make the Shortest URLs In The World, but it 
 Installation
 ------------
 
-shortgirls.py is a single file, it's up to you to run it in a WSGI container of some sort.
+The shortener is a single file, it's up to you to run it in a WSGI container of some sort.
 
-* Apache `mod_wsgi`
+* uwsgi (recommended)
 * gunicorn
-* uwsgi
+* Apache `mod_wsgi`
+
+Steps:
+
+1. Create a user to run the shortener as, and make an SSH key (`ssh-keygen -b 4096`)
+2. Add your deploy key (`~/.ssh/id_rsa.pub`) to the github repo
+3. Clone the repo: `git clone git@github.com:barneydesmond/shortgirls-shortener.git`
+4. Set the necessary environment and options in the .ini config file
+5. Run it: `uwsgi example.ini`
+
 
 
 Dependencies
