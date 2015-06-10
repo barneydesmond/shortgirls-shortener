@@ -216,7 +216,7 @@ def application(environ, start_response):
                     print '''<p>%s</p>''' % URL
                     output.short_url = URL
                     print "<hr /><p>Shorten again?<br />" + URL_ENTRY_FORM + "</p>"
-                    print """<script>window.history.pushState("stateThing", "lzma.so", "/%s");</script>""" % h
+                    print """<script>window.history.pushState("stateThing", URLP.netloc, "/%s");</script>""" % h
                     return output.finalise()
 
                 print "<p>Damn, a collision, let's try again...</p>"
@@ -226,6 +226,7 @@ def application(environ, start_response):
         return output.finalise()
 
     else:
+        SLASHLESS_ROOT_PATH = SHORTENER_ROOT_PATH[1:]# if SHORTENER_ROOT_PATH.startswith('/') else SHORTENER_ROOT_PATH
         print """<p>
             <center>
             <img src="/static/logo.jpg" /><br />
@@ -233,7 +234,7 @@ def application(environ, start_response):
             <hr />""" + URL_ENTRY_FORM + """
             </center>
             <div style="color: silver;">
-            <small><pre>javascript:var%20u='http://lzma.so/?new_url='+encodeURIComponent(document.location.href);a=function(){if(!window.open(u))document.location.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0);</pre></small>
+            <small><pre>javascript:var%20u='""" + URL_STEM + SLASHLESS_ROOT_PATH + """?new_url='+encodeURIComponent(document.location.href);a=function(){if(!window.open(u))document.location.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0);</pre></small>
             </div>
         </p>"""
 
