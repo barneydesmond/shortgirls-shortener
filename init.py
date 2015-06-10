@@ -228,7 +228,7 @@ def application(environ, start_response):
     else:
         print """<p>
             <center>
-            <img src="/static/charlotte.jpg" width="260" height="240" /><br />
+            <img src="/static/logo.jpg" width="260" height="240" /><br />
             Sorry, nothing to see here<br />
             <hr />""" + URL_ENTRY_FORM + """
             </center>
